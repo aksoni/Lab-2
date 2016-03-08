@@ -3,6 +3,7 @@ package com.cs407_android.rockpaperscissors;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+
 
 
 /**
@@ -105,10 +108,17 @@ public class PlayFragment extends Fragment {
             public void onClick(View v) {
 
                 if(player1Choice == null) {
-                   //TODO player 1 chose Rock
+                    //player1Choice = getString(R.string.rock);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, PlayFragment.newInstance(getString(R.string.rock), null))
+                            .addToBackStack(null)
+                            .commit();
                 }
                 else{
-                    //TODO player 2 chose Rock
+                    player2Choice = getString(R.string.rock);
+                    gameLogic(player1Choice, player2Choice);
+
                 }
 
             }
@@ -119,11 +129,17 @@ public class PlayFragment extends Fragment {
             public void onClick(View v) {
 
                 if(player1Choice == null) {
-                    //TODO
+                    //player1Choice = getString(R.string.paper);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, PlayFragment.newInstance(getString(R.string.paper), null))
+                            .addToBackStack(null)
+                            .commit();
 
                 }
                 else{
-                    //TODO
+                    player2Choice = getString(R.string.paper);
+                    gameLogic(player1Choice, player2Choice);
 
                 }
             }
@@ -133,18 +149,78 @@ public class PlayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(player1Choice == null) {
-                    //TODO
+                if(player1Choice == null)
+                {
+                    //player1Choice = getString(R.string.paper);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, PlayFragment.newInstance(getString(R.string.scissors), null))
+                            .addToBackStack(null)
+                            .commit();
 
                 }
                 else{
-                    //TODO
+                    player2Choice = getString(R.string.scissors);
+                    gameLogic(player1Choice, player2Choice);
 
                 }
             }
         });
     }
 
+    private void gameLogic(String player1Choice, String player2Choice)
+    {
+        if(player1Choice.equals(player2Choice))
+        {
+            String winner = "neither of you.";
+            displayWinner(winner);
+        }
+
+        if(player1Choice.equals(getString(R.string.rock)))
+        {
+            if(player2Choice.equals(getString(R.string.scissors)))
+            {
+                String winner = "Player 1";
+                displayWinner(winner);
+            }
+
+            if(player2Choice.equals(getString(R.string.paper)))
+            {
+                String winner = "Player 2";
+                displayWinner(winner);
+            }
+        }
+
+        else if(player1Choice.equals(getString(R.string.paper)))
+        {
+            if(player2Choice.equals(getString(R.string.rock)))
+            {
+                String winner = "Player 1";
+                displayWinner(winner);
+            }
+
+            if(player2Choice.equals(getString(R.string.scissors)))
+            {
+                String winner = "Player 2";
+                displayWinner(winner);
+            }
+        }
+
+        else if(player1Choice.equals(getString(R.string.scissors)))
+        {
+            if(player2Choice.equals(getString(R.string.paper)))
+            {
+                String winner = "Player 1";
+                displayWinner(winner);
+            }
+
+            if(player2Choice.equals(getString(R.string.rock)))
+            {
+                String winner = "Player 2";
+                displayWinner(winner);
+            }
+        }
+    }
 
     private void displayWinner(String winner){
 
@@ -153,18 +229,26 @@ public class PlayFragment extends Fragment {
         //do a prompt about the winner
         new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
-                .setTitle("Winner is:")
+                .setTitle("The winner is:")
                 .setMessage(winner)
                 .setPositiveButton("Replay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO start a rematch!
+                        getFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, PlayFragment.newInstance(null, null))
+                                .addToBackStack(null)
+                                .commit();
+
                     }
                 })
                 .setNegativeButton("Quit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO back out the the start screen
+                        Intent startScreen = new Intent(PlayFragment.this.getActivity(), MainActivity.class);
+                        startActivity(startScreen);
                     }
                 })
                 .show();

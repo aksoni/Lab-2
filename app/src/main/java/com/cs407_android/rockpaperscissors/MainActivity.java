@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playPressed(View view) {
-        //TODO: Put to start game play activity
         Intent playActivity = new Intent(this, PlayActivity.class);
         startActivity(playActivity);
 
